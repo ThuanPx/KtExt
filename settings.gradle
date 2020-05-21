@@ -1,0 +1,3 @@
+include ':KtExt'
+include ':app'
+rootProject.name = "Kotlin Extension Fuction"
