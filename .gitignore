@@ -1,3 +1,13 @@
+# Built application files
+*.apk
+*.aar
+*.ap_
+*.aab
+# Generated files
+bin/
+gen/
+out/
+
 *.iml
 .gradle
 /local.properties
@@ -9,9 +19,9 @@
 /captures
 .externalNativeBuild
 
-# Created by .ignore support plugin (hsz.mobi)
-### Gradle template
-.gradle
+# Gradle files
+.gradle/
+build/
 # Ignore Gradle GUI config
 gradle-app.setting
 
@@ -20,25 +30,6 @@ gradle-app.setting
 
 # Cache of project
 .gradletasknamecache
-
-# # Work around https://youtrack.jetbrains.com/issue/IDEA-116898
-# gradle/wrapper/gradle-wrapper.properties
-### Android template
-# Built application files
-# Files for the ART/Dalvik VM
-# Java class files
-# Generated files
-bin/
-gen/
-app/env
-app/release
-
-# Gradle files
-build/
-gradle/
-gradlew
-*.yml
-gradlew.bat
 
 # Local configuration file (sdk path, etc)
 local.properties
@@ -65,6 +56,7 @@ captures/
 
 # External native build folder generated in Android Studio 2.2 and later
 .externalNativeBuild
+.cxx/
 
 # Google Services (e.g. APIs or Firebase)
 #google-services.json
@@ -83,4 +75,13 @@ fastlane/readme.md
 
 *.DS_Store
 
+# Version control
+vcs.xml
+
+# lint
+lint/intermediates/
+lint/generated/
+lint/outputs/
+lint/tmp/
+# lint/reports/
 
