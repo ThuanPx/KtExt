@@ -9,14 +9,4 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
     }
-
-    fun test() {
-        val textx = "123"
-        val texty = "123"
-
-        val test = StringBuilder()
-        test.append(textx).append(texty)
-
-        val test2 = "$textx$texty"
-    }
 }

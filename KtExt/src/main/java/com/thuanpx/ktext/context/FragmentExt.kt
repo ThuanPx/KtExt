@@ -116,3 +116,8 @@ fun Fragment.hideKeyboard(useReflection: Boolean = true) {
         }
     }
 }
+
+/**
+ * Extension method to get the TAG name for all object
+ */
+inline fun <reified T> TAG() = T::class.simpleName
