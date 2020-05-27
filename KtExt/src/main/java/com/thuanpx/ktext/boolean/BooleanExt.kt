@@ -1,3 +1,6 @@
+@file:JvmName("KtExtBoolean")
+@file:JvmMultifileClass
+
 package com.thuanpx.ktext.boolean
 
 /**
