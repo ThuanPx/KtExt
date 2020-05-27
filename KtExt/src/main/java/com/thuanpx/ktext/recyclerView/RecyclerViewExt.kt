@@ -1,3 +1,6 @@
+@file:JvmName("KtExtRecyclerView")
+@file:JvmMultifileClass
+
 package com.thuanpx.ktext.recyclerView
 
 import android.view.LayoutInflater

@@ -1,3 +1,6 @@
+@file:JvmName("KtExtNumber")
+@file:JvmMultifileClass
+
 package com.thuanpx.ktext.number
 
 import java.text.DecimalFormat
@@ -13,8 +16,6 @@ fun Int?.nullToZero() = this ?: 0
 fun Int?.isTrue() = this == 1
 
 fun Double?.isNullOrZero() = this == 0.0 || this == null
-
-fun String?.isNullOrZero() = this == "0" || this == null
 
 fun Double?.nullToDefault() = this ?: -1.0
 

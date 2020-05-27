@@ -1,3 +1,6 @@
+@file:JvmName("KtExtContext")
+@file:JvmMultifileClass
+
 package com.thuanpx.ktext.context
 
 import android.app.Activity

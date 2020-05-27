@@ -1,3 +1,6 @@
+@file:JvmName("KtExtCollection")
+@file:JvmMultifileClass
+
 package com.thuanpx.ktext.collection
 
 /**

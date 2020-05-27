@@ -1,3 +1,6 @@
+@file:JvmName("KtExtString")
+@file:JvmMultifileClass
+
 package com.thuanpx.ktext.string
 
 import android.util.Patterns
@@ -64,3 +67,5 @@ fun String.isNumeric(): Boolean = this matches "-?\\d+(\\.\\d+)?".toRegex()
 fun String.containsWebUrl() = Patterns.WEB_URL.matcher(this).find()
 
 fun String?.nullToEmpty(): String = this ?: ""
+
+fun String?.isNullOrZero() = this == "0" || this == null

@@ -1,3 +1,6 @@
+@file:JvmName("KtExtDate")
+@file:JvmMultifileClass
+
 package com.thuanpx.ktext.date
 
 import android.text.TextUtils
