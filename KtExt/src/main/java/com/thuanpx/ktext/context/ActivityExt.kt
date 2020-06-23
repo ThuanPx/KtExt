@@ -5,8 +5,11 @@ package com.thuanpx.ktext.context
 
 import android.app.Activity
 import android.content.Intent
+import android.graphics.Color
+import android.os.Build
 import android.os.Bundle
 import android.os.Parcelable
+import android.view.View
 import androidx.annotation.IdRes
 import androidx.annotation.NonNull
 import androidx.fragment.app.Fragment
@@ -110,3 +113,12 @@ fun FragmentActivity.getCurrentFragment(@IdRes containerId: Int): Fragment? {
     return supportFragmentManager.findFragmentById(containerId)
 }
 
+fun FragmentActivity.setTransparentStatusBar(isDarkBackground: Boolean = false) {
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+        window.statusBarColor = Color.TRANSPARENT
+        window.decorView.systemUiVisibility = if (isDarkBackground)
+            View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+        else
+            View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+    }
+}
