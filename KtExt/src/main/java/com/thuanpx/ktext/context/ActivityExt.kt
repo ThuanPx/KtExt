@@ -6,12 +6,15 @@ package com.thuanpx.ktext.context
 import android.app.Activity
 import android.content.Intent
 import android.graphics.Color
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Parcelable
 import android.view.View
+import androidx.annotation.ColorRes
 import androidx.annotation.IdRes
 import androidx.annotation.NonNull
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import com.thuanpx.ktext.AnimationType
@@ -23,7 +26,7 @@ import kotlin.reflect.KClass
  * Created by ThuanPx on 3/15/20.
  */
 
-fun <T : Activity> FragmentActivity.startActivity(
+fun <T : Activity> FragmentActivity.goTo(
     cls: KClass<T>,
     bundle: Bundle? = null,
     parcel: Parcelable? = null
@@ -34,18 +37,7 @@ fun <T : Activity> FragmentActivity.startActivity(
     startActivity(intent)
 }
 
-fun FragmentActivity.startActivityForResult(
-    @NonNull intent: Intent,
-    requestCode: Int,
-    flags: Int? = null
-) {
-    flags?.let {
-        intent.flags = it
-    }
-    startActivityForResult(intent, requestCode)
-}
-
-fun FragmentActivity.startActivityAtRoot(
+fun FragmentActivity.rootTo(
     @NonNull clazz: KClass<out Activity>,
     args: Bundle? = null
 ) {
@@ -57,7 +49,7 @@ fun FragmentActivity.startActivityAtRoot(
     this.startActivity(intent)
 }
 
-fun FragmentActivity.replaceFragmentToActivity(
+fun FragmentActivity.replaceFragment(
     @IdRes containerId: Int,
     fragment: Fragment,
     addToBackStack: Boolean = true,
@@ -72,7 +64,7 @@ fun FragmentActivity.replaceFragmentToActivity(
     }, animateType = animateType)
 }
 
-fun FragmentActivity.addFragmentToActivity(
+fun FragmentActivity.addFragment(
     @IdRes containerId: Int,
     fragment: Fragment,
     addToBackStack: Boolean = true,
@@ -87,16 +79,12 @@ fun FragmentActivity.addFragmentToActivity(
     }, animateType = animateType)
 }
 
-fun FragmentActivity.goBackFragment() {
-    supportFragmentManager.popBackStackImmediate()
-}
-
-fun FragmentActivity.isVisibleFragment(tag: String): Boolean? {
+fun FragmentActivity.isVisibleFragment(tag: String): Boolean {
     val fragment = supportFragmentManager.findFragmentByTag(tag)
     return fragment?.isAdded ?: false && fragment?.isVisible ?: false
 }
 
-inline fun <reified T : Any> FragmentActivity.getFragmentInActivity(clazz: KClass<T>): T? {
+inline fun <reified T : Any> FragmentActivity.getFragment(clazz: KClass<T>): T? {
     val tag = clazz.java.simpleName
     return supportFragmentManager.findFragmentByTag(tag) as T?
 }
@@ -121,4 +109,20 @@ fun FragmentActivity.setTransparentStatusBar(isDarkBackground: Boolean = false) 
         else
             View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
     }
+}
+
+fun FragmentActivity.setStatusBarColor(@ColorRes color: Int, isDarkColor: Boolean = false) {
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+        window?.apply {
+            decorView.systemUiVisibility = if (isDarkColor) 0 else View.SYSTEM_UI_FLAG_VISIBLE
+            statusBarColor = ContextCompat.getColor(context, color)
+        }
+    }
+}
+
+fun FragmentActivity.openWithUrl(url: String) {
+    val defaultBrowser =
+        Intent.makeMainSelectorActivity(Intent.ACTION_MAIN, Intent.CATEGORY_APP_BROWSER)
+    defaultBrowser.data = Uri.parse(url)
+    this.startActivity(defaultBrowser)
 }
