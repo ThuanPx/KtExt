@@ -21,37 +21,43 @@ annotation class DslDialog
 
 @DslDialog
 class DialogBuilder(
-    val context: Context,
-    val themeColor: DialogThemeColor,
+    private val context: Context,
     val setup: DialogBuilder.() -> Unit = {}
 ) {
 
     var title: String = ""
-    var messageText: String = ""
+    var message: String = ""
+    var titleColor: Int = android.R.color.black
+    var messageColor: Int = android.R.color.black
     var positiveText: String = "OK"
     var negativeText: String = "No"
-    var positiveAction: (() -> Unit)? = null
-    var negativeAction: (() -> Unit)? = null
+    var positiveListener: (() -> Unit)? = null
+    var negativeListener: (() -> Unit)? = null
+    var positiveColor: Int = R.color.blue_700
+    var negativeColor: Int = R.color.blue_700
     var cancelable: Boolean = false
-    var isShowNegativeButton = false
+    var isShowNegative = false
     private lateinit var dialog: AlertDialog
 
 
     fun build(): AlertDialog {
         setup()
-        if (messageText.isEmpty()) {
+        if (message.isEmpty()) {
             throw IllegalArgumentException("You should fill all mandatory fields in the options")
         }
         val options = DialogOptions(
             title = title,
-            messageText = messageText,
-            backgroundThemeColor = themeColor,
+            message = message,
             positiveText = positiveText,
             negativeText = negativeText,
-            positiveAction = positiveAction,
-            negativeAction = negativeAction,
+            positiveListener = positiveListener,
+            negativeListener = negativeListener,
             cancelable = cancelable,
-            isShowNegativeButton = isShowNegativeButton
+            isShowNegative = isShowNegative,
+            titleColor = titleColor,
+            messageColor = messageColor,
+            negativeColor = negativeColor,
+            positiveColor = positiveColor
         )
 
         dialog = setupCustomAlertDialog(options)
@@ -67,35 +73,39 @@ class DialogBuilder(
         val alertDialog =
             MaterialAlertDialogBuilder(context, R.style.DialogCustomTheme)
                 .setView(view)
-                .setCancelable(false)
+                .setCancelable(options.cancelable)
                 .create()
 
         alertDialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
 
         val tvTitle = view.findViewById<TextView>(R.id.tvTitle)
         tvTitle.text = options.title
-        tvTitle.setTextColor(ContextCompat.getColor(context, options.backgroundThemeColor.titleTextColor))
+        tvTitle.setTextColor(ContextCompat.getColor(context, options.titleColor))
 
         val tvMessage = view.findViewById<TextView>(R.id.tvMessage)
-        tvMessage.text = options.messageText
-        tvMessage.setTextColor(ContextCompat.getColor(context, options.backgroundThemeColor.messageTextColor))
+        tvMessage.text = options.message
+        tvMessage.setTextColor(ContextCompat.getColor(context, options.messageColor))
 
 
         val buttonNegative = view.findViewById<TextView>(R.id.btNegative)
-        buttonNegative.setTextColor(ContextCompat.getColor(context, options.backgroundThemeColor.negativeTextColor))
-        buttonNegative.visibility = if (isShowNegativeButton) View.VISIBLE else View.GONE
+        buttonNegative.setTextColor(ContextCompat.getColor(context, options.negativeColor))
+        buttonNegative.visibility = if (isShowNegative) View.VISIBLE else View.GONE
         buttonNegative.text = options.negativeText
         buttonNegative.clicks {
-            options.negativeAction?.invoke()
-            alertDialog.dismiss()
+            options.negativeListener?.invoke()
+            if (alertDialog.isShowing) {
+                alertDialog.dismiss()
+            }
         }
 
         val buttonPositive = view.findViewById<TextView>(R.id.btPositive)
-        buttonPositive.setTextColor(ContextCompat.getColor(context, options.backgroundThemeColor.positiveTextColor))
+        buttonPositive.setTextColor(ContextCompat.getColor(context, options.positiveColor))
         buttonPositive.text = options.positiveText
         buttonPositive.clicks {
-            options.positiveAction?.invoke()
-            alertDialog.dismiss()
+            options.positiveListener?.invoke()
+            if (alertDialog.isShowing) {
+                alertDialog.dismiss()
+            }
         }
 
 
@@ -104,59 +114,26 @@ class DialogBuilder(
 }
 
 fun Fragment.dialog(setup: DialogBuilder.() -> Unit) {
-    val builder = DialogBuilder(requireContext(), themeColor = DialogThemeColor.Blue, setup = setup)
+    val builder = DialogBuilder(requireContext(), setup = setup)
     builder.build().show()
 }
 
 fun Activity.dialog(setup: DialogBuilder.() -> Unit) {
-    val builder = DialogBuilder(this, themeColor = DialogThemeColor.Blue, setup = setup)
+    val builder = DialogBuilder(this, setup = setup)
     builder.build().show()
 }
 
-fun AlertDialog.dismiss() {
-    if (isShowing) {
-        dismiss()
-    }
-}
-
-
 data class DialogOptions(
     val title: String,
-    val messageText: String,
-    val backgroundThemeColor: DialogThemeColor,
+    val message: String,
     val positiveText: String,
     val negativeText: String,
-    val positiveAction: (() -> Unit)? = null,
-    val negativeAction: (() -> Unit)? = null,
+    val positiveListener: (() -> Unit)? = null,
+    val negativeListener: (() -> Unit)? = null,
+    var positiveColor: Int,
+    var negativeColor: Int,
+    var messageColor: Int,
+    var titleColor: Int,
     val cancelable: Boolean,
-    val isShowNegativeButton: Boolean
+    val isShowNegative: Boolean
 )
-
-sealed class DialogThemeColor {
-    val backgroundColor: Int
-        get() = when (this) {
-            is Blue -> android.R.color.white
-        }
-
-    val messageTextColor: Int
-        get() = when (this) {
-            is Blue -> android.R.color.black
-        }
-
-    val titleTextColor: Int
-        get() = when (this) {
-            is Blue -> android.R.color.black
-        }
-
-    val positiveTextColor: Int
-        get() = when (this) {
-            is Blue -> R.color.blue_700
-        }
-
-    val negativeTextColor: Int
-        get() = when (this) {
-            is Blue -> R.color.blue_700
-        }
-
-    object Blue : DialogThemeColor()
-}

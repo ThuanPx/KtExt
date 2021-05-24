@@ -14,7 +14,7 @@ class MainActivity : AppCompatActivity() {
 
         dialog {
             title = "title text"
-            messageText = "content text"
+            message = "content text"
         }
     }
 }
