@@ -86,7 +86,7 @@ fun FragmentActivity.isVisibleFragment(tag: String): Boolean {
 
 inline fun <reified T : Any> FragmentActivity.getFragment(clazz: KClass<T>): T? {
     val tag = clazz.java.simpleName
-    return supportFragmentManager.findFragmentByTag(tag) as T?
+    return supportFragmentManager.findFragmentByTag(tag) as? T?
 }
 
 /**
