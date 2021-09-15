@@ -17,14 +17,37 @@ import androidx.annotation.NonNull
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.thuanpx.ktext.AnimationType
 import com.thuanpx.ktext.Constant
 import com.thuanpx.ktext.SLIDE_TO_LEFT
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.launch
 import kotlin.reflect.KClass
 
 /**
  * Created by ThuanPx on 3/15/20.
  */
+
+/**
+ * Launches a new coroutine and repeats `block` every time the Activity's viewLifecycleOwner
+ * is in and out of `minActiveState` lifecycle state.
+ * Source: https://medium.com/androiddevelopers/repeatonlifecycle-api-design-story-8670d1a7d333
+ */
+inline fun FragmentActivity.launchAndRepeatWithViewLifecycle(
+    minActiveState: Lifecycle.State = Lifecycle.State.STARTED,
+    crossinline block: suspend CoroutineScope.() -> Unit
+) {
+    this.lifecycleScope.launch {
+        this@launchAndRepeatWithViewLifecycle.lifecycle.repeatOnLifecycle(minActiveState) {
+            block()
+        }
+    }
+}
 
 fun <T : Activity> FragmentActivity.goTo(
     cls: KClass<T>,
